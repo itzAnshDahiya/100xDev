@@ -10,7 +10,7 @@ fs.readFile("aas.txt" , "utf-8" , print);
 console.log("Done!");
 console.log(chalk.blue('I Am Always One Step Ahead Of You'));
 console.log(chalk.blue('I Am Gona Rule This World'));
-console.log(chalk.blue('I Am Gona Become A Billionaire'));
+console.log(chalk.blue('I Am Gona Become A Billionaire For Sure'));
 
 
 //Other example = timeout se 15 sec tk vo timeout chalta rahega background mai
