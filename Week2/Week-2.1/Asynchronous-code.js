@@ -18,7 +18,7 @@ function timeout(){
     console.log("click the button");
 }
 console.log("Hi");
-setTimeout(timeout , 15000);
+setTimeout(timeout , 14000);
 console.log("You are welcomed here");
 
 
