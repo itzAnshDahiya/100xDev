@@ -8,14 +8,14 @@ console.log(result);
 
 //find sum from 1 to a number
 // for 2 :- 1+2 = 3
-function sum1(n){
+function sum2(n){
     let ans = 0;
     for(let i = 1 ; i<=n; i++){
         ans = ans + i;
     }
     return ans;
 }
-const ans = sum1(2);
+const ans = sum2(2);
 console.log(ans);
 
 
