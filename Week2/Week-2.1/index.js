@@ -19,4 +19,4 @@ function print(err,data){
 }
 // fs1.readFile('a.txt' , 'utf-8' , print);  // reads file Asynchrously
 fs.readFile("b.txt" , "utf-8" , print);  // reads fil Asynchrously
-console.log("done!!");
+console.log("done!");
