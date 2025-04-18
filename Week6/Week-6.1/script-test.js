@@ -59,4 +59,4 @@ function doOperation(a,b,op){
 
 }
 const ansaagya = doOperation(3,5,divide);
-console.log(ansaagya);
+console.log(ansaagyamera);
