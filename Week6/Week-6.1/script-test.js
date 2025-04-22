@@ -3,7 +3,7 @@
 function sum(a,b){
     return a+b;
 }
-let result = sum (20,30);
+let result = sum (30,30);
 console.log(result);
 
 //find sum from 1 to a number
