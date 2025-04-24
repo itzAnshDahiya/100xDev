@@ -24,7 +24,7 @@ app.post("/signup", function(req,res){
     const username = req.body.username;
     const password = req.body.password;
 
-    username.push({
+    users.push({
         username: username,
         password: password
     })
@@ -53,6 +53,27 @@ foundUsers.token = token;
             message: token
         })
      }
+})
+
+app.get("/me", function(req,res){
+    const token = req.headers.token
+    let foundUser = null;
+
+    for(let i = 0; i<users.length ; i++){
+        if(users[i].token == token){
+            foundUser = users[i]
+        }
+    }
+    if(foundUser){
+        res.json({
+            username: foundUser.username,
+            password: foundUser.password
+        })
+    }else{
+        res.json({
+            message: "Invalid Token"
+        })
+    }
 })
 
 app.listen(3000);
