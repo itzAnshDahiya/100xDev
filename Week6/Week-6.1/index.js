@@ -242,7 +242,7 @@ app.get("/me", function(req, res) {
         })
     } else {
         res.json({
-            message: "token invalid"
+            message: "token invalid"        //this will be shown when we dont have a token
         })
     }
 
