@@ -180,7 +180,7 @@ app.post("/signup", function (req, res) {
     })    
 
     res.json({
-        message: "You are signed up"
+        message: "You are signed up"      //it will be shown when we are Signed Up
     })
 
     console.log(users)
