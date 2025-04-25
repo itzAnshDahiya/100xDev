@@ -87,74 +87,167 @@
 
 //<------- Authentication with JWT      ---------->
 
-const express = require('express');
-const jwt = reuire('jsonwebtoken');
-const JWT_SECRET = "randomAnsh";
+// const express = require('express');
+// const jwt = reuire('jsonwebtoken');
+// const JWT_SECRET = "randomAnsh";
 
+// const app = express();
+// app.use(express.json());
+// //[{username:"Ansh", password: 123 , token: "asdasdasadasd"}]
+
+// const users = [];
+
+// app.post("/signup", function(req,res){
+//     const username = req.body.username;
+//     const password = req.body.password;
+
+//     users.push({
+//         username: username,
+//         password: password
+//     })
+
+//     res.json({
+//         message: "You are Signed In"
+//     })
+// })
+
+// app.post("/signin", function(req,res){
+//       const username = req.body.username;
+//       const password = req.body.password;
+
+//      //maps and filters
+//      let foundUsers = null;
+
+//      for(let i = 0; i < users.length ; i++){
+//         if(users[i].username == username && users[i].password == password){
+//             foundUsers = users[i]
+//         }
+//      }
+//      if(foundUsers){
+//         const token = jwt.sign({
+//             username: username
+//      }, JWT_SECRET); //convert their username over to a JWT 
+// // foundUsers.token = token;
+//         res.json({
+//             message: token
+//         })
+//      }
+// })
+
+// app.get("/me", function(req,res){
+//     const token = req.headers.token
+//     const decodedInformation = jwt.verify(token, JWT_SECRET);  //{username: "Ansh@gmail.com"}   converting the JWT over to the User
+//     const username = decodedInformation.username
+//     let foundUser = null;
+
+//     for(let i = 0; i<users.length ; i++){
+//         if(users[i].username == username){
+//             foundUser = users[i]
+//         }
+//     }
+//     if(foundUser){
+//         res.json({
+//             username: foundUser.username,
+//             password: foundUser.password
+//         })
+//     }else{
+//         res.json({
+//             message: "Invalid Token",
+//         })
+//     }
+// })
+
+// app.listen(3000);
+
+
+//----------------------Harkirat code----------------------//
+
+const express = require('express');
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = "ramdomharkiratilovekiara"
 const app = express();
 app.use(express.json());
-//[{username:"Ansh", password: 123 , token: "asdasdasadasd"}]
 
 const users = [];
 
-app.post("/signup", function(req,res){
+app.post("/signup", function (req, res) {
     const username = req.body.username;
     const password = req.body.password;
 
     users.push({
         username: username,
         password: password
-    })
+    })    
 
     res.json({
-        message: "You are Signed In"
+        message: "You are signed up"
     })
+
+    console.log(users)
+    
 })
 
-app.post("/signin", function(req,res){
-      const username = req.body.username;
-      const password = req.body.password;
+app.post("/signin", function(req, res) {
+    
+    const username = req.body.username;
+    const password = req.body.password;
 
-     //maps and filters
-     let foundUsers = null;
-
-     for(let i = 0; i < users.length ; i++){
-        if(users[i].username == username && users[i].password == password){
-            foundUsers = users[i]
-        }
-     }
-     if(foundUsers){
-        const token = jwt.sign({
-            username: username
-     }, JWT_SECRET); //convert their username over to a JWT 
-// foundUsers.token = token;
-        res.json({
-            message: token
-        })
-     }
-})
-
-app.get("/me", function(req,res){
-    const token = req.headers.token
-    const decodedInformation = jwt.verify(token, JWT_SECRET);  //{username: "Ansh@gmail.com"}   converting the JWT over to the User
-    const username = decodedInformation.username
+    // maps and filter
     let foundUser = null;
 
-    for(let i = 0; i<users.length ; i++){
-        if(users[i].username == username){
+    for (let i = 0; i<users.length; i++) {
+        if (users[i].username == username && users[i].password == password) {
             foundUser = users[i]
         }
     }
-    if(foundUser){
+
+    if (foundUser) {
+        const token = jwt.sign({
+            username: username,
+            password: password,
+            firstname,
+            lastName,
+            courses: []
+        }, JWT_SECRET) ;
+
+        // foundUser.token = token;
+        res.json({
+            token: token
+        })
+    } else {
+        res.status(403).send({
+            message: "Invalid username or password"
+        })
+    }
+    console.log(users)
+})
+
+app.get("/me", function(req, res) {
+    const token = req.headers.token // jwt
+    const decodedInformation = jwt.verify(token, JWT_SECRET);  // {username: "harkirat@gmail.com"}
+    const unAuthDecodedinfo = jwt.decode(token,);  // {username: "harkirat@gmail.com"}
+    const username = decodedInformation.username
+    let foundUser = null;
+
+    for (let i = 0; i < users.length; i++) {
+        if (users[i].username == username)  {
+            foundUser = users[i]
+        }
+    }
+
+    if (foundUser) {
         res.json({
             username: foundUser.username,
             password: foundUser.password
         })
-    }else{
+    } else {
         res.json({
-            message: "Invalid Token",
+            message: "token invalid"
         })
     }
+
+
 })
 
-app.listen(3000);
+
+app.listen(3000);// that the http server is listening on port 3000
