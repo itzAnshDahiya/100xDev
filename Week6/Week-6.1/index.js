@@ -229,7 +229,7 @@ app.get("/me", function(req, res) {
     const username = decodedInformation.username
     let foundUser = null;
 
-    for (let i = 0; i < users.length; i++) {
+    for (let i = 0; i < users.length; i++) {           //loop for checking
         if (users[i].username == username)  {
             foundUser = users[i]
         }
