@@ -58,3 +58,44 @@ app.post("/signin", logger, function(req, res) {
 
         res.header("random", "harkirat");
 
+        res.json({
+            token: token
+        })
+    }
+})
+
+function auth(req, res, next) {
+    const token = req.headers.token;
+    const decodedData = jwt.verify(token, JWT_SECRET);
+
+    if (decodedData.username) {
+        // req = {status, headers...., username, password, userFirstName, random; ":123123"}
+        req.username = decodedData.username
+        next()
+    } else {
+        res.json({
+            message: "You are not logged in"
+        })
+    }
+}
+
+app.get("/me", logger, auth, function(req, res) {
+    // req = {status, headers...., username, password, userFirstName, random; ":123123"}
+    const currentUser = req.username;
+    // const token = req.headers.token;
+    // const decodedData = jwt.verify(token, JWT_SECRET);
+    // const currentUser = decodedData.username
+
+    for (let i = 0; i < users.length; i++) {
+        if (users[i].username === currentUser) {
+            foundUser = users[i]
+        }
+    }
+
+    res.json({
+        username: foundUser.username,
+        password: foundUser.password
+    })
+})
+
+app.listen(3000);
