@@ -47,7 +47,7 @@ app.post("/signin", logger, function(req, res) {
 
     if (!foundUser) {
         res.json({
-            message: "Credentials are incorrect"
+            message: "Credentials are incorrect"    //This will be displayed when the data filled is not right
         })
         return 
     } else {
