@@ -15,7 +15,7 @@ function logger(req, res, next) {
 
 // localhost:3000
 app.get("/", function(req, res) {
-    res.sendFile(__dirname + "/public/index.html");
+    res.sendFile(__dirname + "/public/index.html");     // __dirname means the current directory
 })
 
 app.post("/signup", logger, function(req, res) {
