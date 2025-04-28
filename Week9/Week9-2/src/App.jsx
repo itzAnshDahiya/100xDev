@@ -12,7 +12,7 @@ function App() {
 
   return (
     <div>
-      <b>Hi</b>
+      <b>Hi, How Are You</b>
       {counterVisible && <Counter />}
       <b>There</b>
     </div>
