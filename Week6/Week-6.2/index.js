@@ -13,7 +13,7 @@ function logger(req, res, next) {
     next();
 }
 
-// localhost:3000
+// localhost:2000
 app.get("/", function(req, res) {
     res.sendFile(__dirname + "/public/index.html");     // __dirname means the current directory
 })
@@ -98,4 +98,4 @@ app.get("/me", logger, auth, function(req, res) {
     })
 })
 
-app.listen(3000);
+app.listen(2000);
