@@ -98,4 +98,4 @@ app.get("/me", logger, auth, function(req, res) {
     })
 })
 
-app.listen(2000);
+app.listen(1000);
