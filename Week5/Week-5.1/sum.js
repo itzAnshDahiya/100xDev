@@ -16,7 +16,7 @@ app.get("/sum" , function ( req , res ){
     })
 })
 
-app.listen(3000);
+app.listen(1000);
 
 
 // const express = require("express");
