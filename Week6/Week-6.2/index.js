@@ -99,3 +99,28 @@ app.get("/me", logger, auth, function(req, res) {
 })
 
 app.listen(1000);
+
+
+// const express = require("express");
+// const jwt = require("jsonwebtoken");
+
+// const app = express();
+// const PORT = 1000;
+// const JWT_SECRET = "kirat123123";  // In real apps, keep secrets in environment variables
+
+// app.use(express.json()); // Parses incoming JSON requests
+
+// // In-memory store for users (for development/testing only)
+// const users = [];
+
+// // Logger middleware to track incoming requests
+// function logger(req, res, next) {
+//     console.log(`${req.method} request came to ${req.url}`);
+//     next(); // Proceed to next middleware or route handler
+// }
+
+// // Serve the HTML page at root URL
+// app.get("/", function(req, res) {
+//     res.sendFile(__dirname + "/public/index.html"); // Serves a static HTML file
+// });
+
