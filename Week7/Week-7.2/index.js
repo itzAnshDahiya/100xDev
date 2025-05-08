@@ -5,7 +5,7 @@ const { auth, JWT_SECRET } = require("./auth");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 
-mongoose.connect("")
+mongoose.connect("")  //MongoDB connection string
 
 const app = express();
 app.use(express.json());
@@ -16,18 +16,27 @@ app.post("/signup", async function(req, res) {
     const name = req.body.name;
     //promosify the fs function call
 
+    let errorThrown = false;
+    try{
     const hashedpassword = await bcrypt.hash(password , 5);
     console.log(hashedpassword);
 
     await UserModel.create({
         email: email,
-        password: hashedpassword ,
+        password: hashedpassword  ,
         name: name
     });
-    
+} catch(e){
     res.json({
-        message: "You are signed up"
+        message: "User Already Exists"
     })
+    errorThrown = true;
+}
+ if(!errorThrown){ res.json({
+    message: "You are signed up"
+})
+}
+   
 });
 
 
@@ -37,10 +46,17 @@ app.post("/signin", async function(req, res) {
 
     const response = await UserModel.findOne({
         email: email,
-        password: password,
     });
 
-    if (response) {
+    if(!response){
+        res.status(403).json({
+            message: "User Does Not Exist In Our Database"
+        })
+    } 
+
+    const passwordMatch = await bcrypt.compare(password , response.password);
+
+    if (passwordMatch) {
         const token = jwt.sign({
             id: response._id.toString()
         }, JWT_SECRET);
@@ -85,4 +101,4 @@ app.get("/todos", auth, async function(req, res) {
     })
 });
 
-app.listen(3001);
+app.listen(3000);
