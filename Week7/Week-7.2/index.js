@@ -16,8 +16,19 @@ app.post("/signup", async function(req, res) {
     const name = req.body.name;
     //promosify the fs function call
 
-    let errorThrown = false;
-    try{
+    // Email ek string hai or usme "@" aata hai vo check krne k liye
+//     if(!email.isString() || !email.contains("@")){
+// res.json({
+//     message: "Incorrect email"
+// })
+//       return  
+//  }
+
+if(typeof email != "string" || email.length < 5 || email.includes("@")) {
+    res.json({
+        message: "Email Incorrect Check The Credentials"
+    })
+}
     const hashedpassword = await bcrypt.hash(password , 5);
     console.log(hashedpassword);
 
@@ -26,19 +37,10 @@ app.post("/signup", async function(req, res) {
         password: hashedpassword  ,
         name: name
     });
-} catch(e){
-    res.json({
-        message: "User Already Exists"
-    })
-    errorThrown = true;
-}
- if(!errorThrown){ res.json({
+ res.json({
     message: "You are signed up"
 })
-}
-   
 });
-
 
 app.post("/signin", async function(req, res) {
     const email = req.body.email;
