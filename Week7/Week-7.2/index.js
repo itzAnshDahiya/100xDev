@@ -136,4 +136,4 @@ app.get("/todos", auth, async function(req, res) {
 });
 
 // Server ko listen karwa rahe hain port 3000 par
-app.listen(2000);  // Server ko 2000 port par chalane ke liye
+app.listen(3000);  // Server ko 3000 port par chalane ke liye
