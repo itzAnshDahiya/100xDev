@@ -76,7 +76,7 @@ export default App; // App component ko export kar rahe hain taaki baaki app mei
 // export default App;
 
 
-// .................More Refined Way.....................//
+// .................More Refined Way - More Optimized way.....................//
 // import { useState } from 'react'; // React ka useState hook import kar rahe hain (state manage karne ke liye)
 // import './App.css'; // App ke CSS file ko import kar rahe hain
 
