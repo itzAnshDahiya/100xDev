@@ -10,6 +10,6 @@ function map(arr, transformFn) {
 }
 
 // Example usage:
-const numbers = [1, 2, 3, 4];
+const numbers = [1, 2, 3, 4 ,5];
 const doubled = map(numbers, x => x * 2);
 console.log(doubled);
