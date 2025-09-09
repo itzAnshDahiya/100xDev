@@ -51,7 +51,7 @@ app.listen(3000);
 //         res.status(400).json({ error: "Both 'a' and 'b' must be valid numbers." });
 //         return null;
 //     }
-//     return { a, b };
+//     return {a,b};
 // }
 
 // // Addition
