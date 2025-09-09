@@ -98,7 +98,7 @@ app.get("/me", logger, auth, function(req, res) {
     })
 })
 
-app.listen(1000);
+app.listen(3000);
 
 
 // ----------------------More structured code----------------------
