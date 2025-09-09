@@ -85,4 +85,21 @@ axios.post('https://jsonplaceholder.typicode.com/posts', {
 //     console.error('Axios Error:', error);
 //   });
 
-/
+// // Example: POST request using fetch
+// fetch('https://jsonplaceholder.typicode.com/posts', {
+//   method: 'POST',
+//   headers: { 'Content-Type': 'application/json' },
+//   body: JSON.stringify({ title: 'foo', body: 'bar', userId: 1 })
+// })
+//   .then(response => response.json())
+//   .then(data => console.log('Fetch POST:', data))
+//   .catch(error => console.error('Fetch POST Error:', error));
+
+// // Example: POST request using axios
+// axios.post('https://jsonplaceholder.typicode.com/posts', {
+//   title: 'foo',
+//   body: 'bar',
+//   userId: 1
+// })
+//   .then(response => console.log('Axios POST:', response.data))
+//   .catch(error => console.error('Axios POST Error:', error));
