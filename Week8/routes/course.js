@@ -4,7 +4,7 @@ const courseRouter = Router();
 
 courseRouter.post('/purchase', (req, res) => {
     res.json({
-        message: "signup  endpoint"
+        message: "signup endpoint"
   })
 });
 
