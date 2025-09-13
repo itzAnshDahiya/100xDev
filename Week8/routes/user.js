@@ -1,19 +1,26 @@
 const { Router } = require("express");
-const { userModel } = require("../db"); 
+const { userModel, purchaseModel } = require("../db"); 
 const jwt = require("jsonwebtoken");
 const {JWT_USER_PASSWORD} = require("../config");
+console.log(JWT_USER_PASSWORD);
+
 
 const userRouter = Router();
 
 userRouter.post('/signup', async function(req, res) {
     const {  email, password , firstName, lastName } = req.body;
+    // Check if user already exists
+    const existingUser = await userModel.findOne({ email });
+    if (existingUser) {
+        return res.status(409).json({ message: "User already exists" });
+    }
     await userModel.create({
         email: email,
         password: password,
         firstName: firstName,
         lastName: lastName
     })
-res.json({
+    res.json({
         message: "signup endpoint"
     });
 });
@@ -41,12 +48,80 @@ res.json({
 }
 });
 
-userRouter.post('/purchases', function (req, res) {
+userRouter.post('/purchases', userMiddleware , async function (req, res) {
+    const userId = req.userId;
+
+    const purchases = await purchaseModel.find({
+        userId,
+        courseId
+    })
     res.json({
-        message: "signup endpoint"
+        purchases
     });
 });
 
 module.exports = {
     userRouter: userRouter
 }
+
+
+// const { Router } = require("express");
+// const { userModel } = require("../db"); 
+// const jwt = require("jsonwebtoken");
+// const { JWT_USER_PASSWORD } = require("../config");
+
+// const userRouter = Router();
+
+// // Signup route
+// userRouter.post('/signup', async function(req, res) {
+//     try {
+//         const { email, password, firstName, lastName } = req.body;
+//         if (!email || !password || !firstName || !lastName) {
+//             return res.status(400).json({ message: "All fields are required" });
+//         }
+//         // Check if user already exists
+//         const existingUser = await userModel.findOne({ email });
+//         if (existingUser) {
+//             return res.status(409).json({ message: "User already exists" });
+//         }
+//         await userModel.create({
+//             email,
+//             password, 
+//             firstName,
+//             lastName
+//         });
+//         res.json({ message: "Signup successful" });
+//     } catch (error) {
+//         res.status(500).json({ message: "Internal server error" });
+//     }
+// });
+
+// // Signin route
+// userRouter.post("/signin", async function(req, res) {
+//     try {
+//         const { email, password } = req.body;
+//         if (!email || !password) {
+//             return res.status(400).json({ message: "Email and password required" });
+//         }
+//         const user = await userModel.findOne({ email, password });
+//         if (user) {
+//             const token = jwt.sign({ id: user._id }, JWT_USER_PASSWORD);
+//             res.json({ token });
+//         } else {
+//             res.status(403).json({ message: "Incorrect Credentials" });
+//         }
+//     } catch (error) {
+//         res.status(500).json({ message: "Internal server error" });
+//     }
+// });
+
+// // Purchases route (placeholder)
+// userRouter.post('/purchases', function (req, res) {
+//     res.json({
+//         message: "purchases endpoint"
+//     });
+// });
+
+// module.exports = {
+//     userRouter: userRouter
+// }
