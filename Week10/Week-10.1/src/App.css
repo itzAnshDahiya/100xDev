@@ -1,0 +1,75 @@
+/* Global Styles */
+body {
+  margin: 0;
+  font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f9f9fb;
+  color: #222;
+  line-height: 1.6;
+}
+
+/* App Container */
+div {
+  padding: 2rem;
+  text-align: center;
+}
+
+/* Navigation Links */
+a {
+  text-decoration: none;
+  color: #2d6cdf;
+  font-weight: 500;
+  margin: 0 1rem;
+  transition: color 0.3s ease, border-bottom 0.3s ease;
+  border-bottom: 2px solid transparent;
+}
+
+a:hover {
+  color: #1a4aa5;
+  border-bottom: 2px solid #1a4aa5;
+}
+
+/* Headings */
+h1, h2 {
+  margin-top: 2rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: #111;
+}
+
+h2 {
+  font-size: 1.75rem;
+  color: #333;
+}
+
+/* Button */
+button {
+  margin-top: 1.5rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  background: #2d6cdf;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background: #1a4aa5;
+  transform: translateY(-2px);
+}
+
+button:active {
+  background: #15387d;
+  transform: translateY(0);
+}
+
+/* Error Page */
+h1 {
+  color: #c62828;
+}
