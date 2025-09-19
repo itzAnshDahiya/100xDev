@@ -178,8 +178,6 @@ export default App; // App component ko export kar rahe hain taaki baaki app mei
 
 
 
-
-
 //==================LIGHT BULB HARKIRAT CODE==================
 // import { useState } from 'react'
 // import './App.css'
@@ -219,5 +217,3 @@ export default App; // App component ko export kar rahe hain taaki baaki app mei
 // }
 
 // export default App
-
-
