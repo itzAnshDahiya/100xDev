@@ -42,7 +42,7 @@ function ToggleBulbState({ bulbOn, setBulbOn }) {
     </div>
 }
 
-export default App; // App component ko export kar rahe hain taaki baaki app mein use ho sake
+export default App; // App component ko export kar rahe hain taaki baaki app mein use kr sake
 
 // ---------Alternate Method ka Code (Single Component) jo Parent-Child ko demonstrate nahi karta hai---------
 // is method mein direct bulb ka state same component mein handle hota hai, lekin yeh component separation nahi dikhata
