@@ -1,3 +1,5 @@
+//---------------------Explanation with comments--------------------
+
 // dotenv package ko require kar rahe hain taaki environment variables ko load kar sakein.
 require('dotenv').config();
 
