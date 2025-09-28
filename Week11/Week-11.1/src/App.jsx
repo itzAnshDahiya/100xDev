@@ -155,3 +155,74 @@
 
 // Export the App component as the default export from this module
 // export default App;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//// ================= Assignment - 1 =====================
+// Import the useIsOnline custom hook from the hooks folder
+// import useIsOnline from "./hooks/useIsOnline";
+
+// // App component to display the online status of the user using the useIsOnline custom hook
+// function App() {
+//   // Call the useIsOnline hook to get the current online status
+//   const isOnline = useIsOnline();
+
+//   // Render the online status
+//   return (
+//     <div>
+//       <h1>Custom Hook - useIsOnline</h1> {/* Header for the custom hook demo */}
+
+//       {/* Display online status message based on the value of isOnline */}
+//       <h3>You are currently {isOnline ? "Online🟢" : "Offline🔴"}</h3>
+//     </div>
+//   );
+// }
+
+// // Export the App component as default to use it in other files 
+// export default App; 
+
+
+
+//================== Assignment -2 ========================
+// Import the CustomUsePrevious component in the App component
+// import CustomUsePrevious from "./CustomUsePrevious";
+
+// // Import the UsePreviousFromuseHooks component in the App component
+// import UsePreviousFromuseHooks from "./UsePreviousFromuseHooks";
+
+// // Create a function component named App that serves as the main application component
+// function App() {
+
+//     // Return the JSX for the component
+//     return (
+//         <div>
+//             {/* /Render the CustomUsePrevious component */}
+//            <CustomUsePrevious />
+
+//             {/* Render the UsePreviousFromuseHooks component */}
+//             <UsePreviousFromuseHooks />
+//         </div>
+//     );
+// }
+
+// // Export the App component as the default export from this module
+// export default App;
