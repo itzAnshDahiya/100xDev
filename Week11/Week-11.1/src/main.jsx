@@ -11,9 +11,6 @@ createRoot(document.getElementById('root')).render(
 
 
 
-
-
-
 // Lecture Codes  
  // Import the useState hook from the react module
 import { useState } from "react";
