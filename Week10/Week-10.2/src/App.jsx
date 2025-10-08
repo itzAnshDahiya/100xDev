@@ -1,5 +1,6 @@
 import { useState } from 'react'; // React ka useState hook import kar rahe hain, jo state manage karne ke liye hota hai
 import './App.css'; // App ke CSS ko import kar rahe hain
+import App from './App.jsx'
 
 // App component jo ek parent component hai
 function App() {
