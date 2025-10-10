@@ -25,10 +25,10 @@ function App() {
     return (
         <>
             This div will have a background color of light blue
-            <div className="bg-blue-200">Hi</div>
+            <div className="bg-red">Hi</div>
 
             {/* This div will have a background color of blue because we have changed the color of red-500 to blue in the tailwind.config.js file */}
-            <div className="bg-red-500">Hi</div>
+           <div class="bg-blue-500">This div has a blue background.</div>
 
             {/* This div will have a background color of purple-800 and a border color of red-600 */}
             <div className="h-24 w-24 bg-purple-800 mt-3 ml-3 rounded-md border-2 border-red-600"></div>
