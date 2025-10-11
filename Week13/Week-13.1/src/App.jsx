@@ -27,7 +27,7 @@ function App() {
             This div will have a background color of light blue
             <div className="bg-red">Hi</div>
 
-            {/* This div will have a background color of blue because we have changed the color of red-500 to blue in the tailwind.config.js file */}
+            {/* This div will have a background color of blue because we have changed the color of red-500 to blue in the tailwind.config.js file... */}
            <div class="bg-blue-500">This div has a blue background.</div>
 
             {/* This div will have a background color of purple-800 and a border color of red-600 */}
