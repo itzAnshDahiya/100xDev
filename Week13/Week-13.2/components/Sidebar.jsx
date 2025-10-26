@@ -1,4 +1,4 @@
-// // Here Is The Code
+// // Here Is The Code - Not fully Optimized
 // export const Sidebar = () => {
 //     return <div>
                 
