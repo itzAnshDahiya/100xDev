@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+// import usePrevious from './usePreviousHook'
+import './Otp.css'
 
 /**
  * OTP input component
@@ -26,12 +28,15 @@ export function Otp({ length = 6, onComplete, autoFocus = true, resendTimeout = 
         return ()=> clearInterval(t)
     },[timeLeft])
 
-    useEffect(()=>{
-        setDisabledSubmit(values.some(v=> v === ''))
-        if(!values.some(v=> v==='')){
-            onComplete?.(values.join(''))
-        }
-    },[values, onComplete])
+        useEffect(()=>{
+            setDisabledSubmit(values.some(v=> v === ''))
+            if(!values.some(v=> v==='')){
+                onComplete?.(values.join(''))
+            }
+        },[values, onComplete])
+
+        // expose previous code for parent/analytics or animations
+        const previousCode = usePrevious(values.join(''))
 
     useEffect(()=>{
         if(autoFocus && inputsRef.current[0]) inputsRef.current[0].focus()
@@ -107,21 +112,21 @@ export function Otp({ length = 6, onComplete, autoFocus = true, resendTimeout = 
         if(after) after.focus()
     },[length, setValueAt, values])
 
-    const inputs = useMemo(()=> Array.from({length}).map((_,i)=> (
-        <input
-            key={i}
-            ref={el => inputsRef.current[i] = el}
-            inputMode="numeric"
-            pattern="[0-9]*"
-            maxLength={1}
-            value={values[i]}
-            onChange={(e)=> handleChange(e,i)}
-            onKeyDown={(e)=> handleKey(e,i)}
-            onPaste={onPaste}
-            className="m-1 w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 text-center text-lg outline-none focus:ring-2 focus:ring-indigo-400"
-            aria-label={`Digit ${i+1}`}
-        />
-    )), [length, values, handleChange, handleKey, onPaste])
+        const inputs = useMemo(()=> Array.from({length}).map((_,i)=> (
+            <input
+                key={i}
+                ref={el => inputsRef.current[i] = el}
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={1}
+                value={values[i]}
+                onChange={(e)=> handleChange(e,i)}
+                onKeyDown={(e)=> handleKey(e,i)}
+                onPaste={onPaste}
+                className="otp-input"
+                aria-label={`Digit ${i+1}`}
+            />
+        )), [length, values, handleChange, handleKey, onPaste])
 
     return (
         <div className="flex flex-col items-center">
