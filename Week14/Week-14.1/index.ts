@@ -1,5 +1,5 @@
-let x: number = 1;  // type inferencing
-console.log(x);
+// let x: number = 1;     ======   type inferencing
+// console.log(x);
 
 
 // Add 2 numbers
@@ -30,3 +30,28 @@ console.log(x);
 // delayandCall(() => {
 // console.log("Hi There");
 // })
+
+// How a function is written with the same output datatype
+
+// function sum(a: number, b: number): number {
+// return a+b
+// }
+// sum(3,5);
+
+//greet function using a string and returning with another string
+
+// function greet(name: string): string {
+//     return "Hello" + name
+// }
+// greet("Siddharth");
+// const greeting = greet("Siddharth");
+// console.log(greeting);
+
+// odd and even number
+// function isEven(num: number): boolean {
+//     if(num%2 == 0) {
+//         return true
+//     }else{
+//         return false
+//     }
+// } 
