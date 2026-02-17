@@ -20,3 +20,13 @@ console.log(x);
 //     }
 // }
 // console.log(isLegal(5));
+
+
+//function take another function and return after 1 minute
+// function delayandCall(fn: () => void) {
+//     setTimeout(fn,1000);
+// }
+
+// delayandCall(() => {
+// console.log("Hi There");
+// })
