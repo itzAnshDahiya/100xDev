@@ -59,3 +59,20 @@ function filterUser(users: User[]): User[] {
 
     return ans;
 }
+
+
+// Alternate Method
+/*
+interface User {
+    firstName: string;
+    lastName: string;
+    age: number;
+}
+
+// Yeh function filter karta hai users ko jinka age 18 se zyada ho
+function filterUser(users: User[]): User[] {
+    // Filter method use kar rahe hain, jo ek callback function leta hai
+    // Isme hum direct condition laga kar filter kar rahe hain
+    return users.filter(user => user.age > 18);
+}
+*/
