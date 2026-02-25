@@ -12,7 +12,7 @@ interface Offer {
     amount: number;
     status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
 }
-
+ 
 interface Land {
     id: string;
     location: string;
