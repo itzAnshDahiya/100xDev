@@ -1,4 +1,3 @@
-
 /**
  * ChatBot Backend Implementation (Simulation)
  * This code demonstrates the core logic, types, and features for an AI ChatBot backend.
