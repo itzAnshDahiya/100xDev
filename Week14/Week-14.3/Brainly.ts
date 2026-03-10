@@ -242,4 +242,3 @@ app.login(ansh.email, "1234");
 app.markBestAnswer(q.id, a.id);
 const result = app.getQuestionWithAnswers(q.id);
 console.log(result.question.title, "=> answers:", result.answers.length);
-

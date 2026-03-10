@@ -227,3 +227,300 @@ if (landId1) {
     // Charlie buys successfully since he's approved
     marketplace.buyLand(charlieId, landId1);
 }
+
+
+
+// Well Structured and More Strictier Code
+
+
+// type OfferStatus = "PENDING" | "ACCEPTED" | "REJECTED";
+
+// interface User {
+//     id: string;
+//     name: string;
+//     contactNumber: string;
+//     wishlist: Set<string>;
+// }
+
+// interface Land {
+//     id: string;
+//     location: string;
+//     price: number;
+//     ownerId: string;
+//     isForSale: boolean;
+//     interestedBuyers: Set<string>;
+//     approvedBuyerId: string | null;
+// }
+
+// interface Offer {
+//     id: string;
+//     landId: string;
+//     buyerId: string;
+//     amount: number;
+//     status: OfferStatus;
+// }
+
+// class LandMarketplace {
+//     private users = new Map<string, User>();
+//     private lands = new Map<string, Land>();
+//     private offers = new Map<string, Offer>();
+//     private nextId = 1;
+
+//     private generateId(): string {
+//         return String(this.nextId++);
+//     }
+
+//     private getUser(userId: string, label = "User"): User | null {
+//         const user = this.users.get(userId);
+
+//         if (!user) {
+//             console.error(`[ERROR] ${label} not found: ${userId}`);
+//             return null;
+//         }
+
+//         return user;
+//     }
+
+//     private getLand(landId: string): Land | null {
+//         const land = this.lands.get(landId);
+
+//         if (!land) {
+//             console.error(`[ERROR] Land not found: ${landId}`);
+//             return null;
+//         }
+
+//         return land;
+//     }
+
+//     private getOffer(offerId: string): Offer | null {
+//         const offer = this.offers.get(offerId);
+
+//         if (!offer) {
+//             console.error(`[ERROR] Offer not found: ${offerId}`);
+//             return null;
+//         }
+
+//         return offer;
+//     }
+
+//     registerUser(name: string, contactNumber: string): string {
+//         const userId = this.generateId();
+
+//         this.users.set(userId, {
+//             id: userId,
+//             name,
+//             contactNumber,
+//             wishlist: new Set<string>()
+//         });
+
+//         console.log(`[USER] Registered ${name} with ID ${userId}`);
+//         return userId;
+//     }
+
+//     listLandForSale(ownerId: string, location: string, price: number): string | null {
+//         const owner = this.getUser(ownerId, "Owner");
+//         if (!owner) {
+//             return null;
+//         }
+
+//         const landId = this.generateId();
+
+//         this.lands.set(landId, {
+//             id: landId,
+//             location,
+//             price,
+//             ownerId: owner.id,
+//             isForSale: true,
+//             interestedBuyers: new Set<string>(),
+//             approvedBuyerId: null
+//         });
+
+//         console.log(`[LAND] ${owner.name} listed land ${landId} at ${location} for $${price}`);
+//         return landId;
+//     }
+
+//     addToWishlist(userId: string, landId: string): boolean {
+//         const user = this.getUser(userId);
+//         const land = this.getLand(landId);
+
+//         if (!user || !land) {
+//             return false;
+//         }
+
+//         user.wishlist.add(landId);
+//         console.log(`[WISHLIST] ${user.name} added land ${landId} to the wishlist`);
+//         return true;
+//     }
+
+//     showInterest(userId: string, landId: string): boolean {
+//         const user = this.getUser(userId);
+//         const land = this.getLand(landId);
+
+//         if (!user || !land) {
+//             return false;
+//         }
+
+//         if (land.ownerId === userId) {
+//             console.error("[ERROR] Owners cannot show interest in their own land.");
+//             return false;
+//         }
+
+//         land.interestedBuyers.add(userId);
+//         console.log(`[INTEREST] ${user.name} is interested in land ${landId}`);
+//         return true;
+//     }
+
+//     requestOwnerContact(requesterId: string, landId: string): string | null {
+//         const requester = this.getUser(requesterId, "Requester");
+//         const land = this.getLand(landId);
+
+//         if (!requester || !land) {
+//             return null;
+//         }
+
+//         const hasAccess = requester.wishlist.has(landId) || land.interestedBuyers.has(requesterId);
+//         if (!hasAccess) {
+//             console.error("[ERROR] Add the land to wishlist or show interest before requesting contact details.");
+//             return null;
+//         }
+
+//         const owner = this.getUser(land.ownerId, "Owner");
+//         if (!owner) {
+//             return null;
+//         }
+
+//         console.log(`[CONTACT] Shared ${owner.name}'s number (${owner.contactNumber}) with ${requester.name}`);
+//         return owner.contactNumber;
+//     }
+
+//     makeOffer(buyerId: string, landId: string, amount: number): string | null {
+//         const buyer = this.getUser(buyerId, "Buyer");
+//         const land = this.getLand(landId);
+
+//         if (!buyer || !land) {
+//             return null;
+//         }
+
+//         if (!land.isForSale) {
+//             console.error("[ERROR] This land is not available for sale.");
+//             return null;
+//         }
+
+//         if (land.ownerId === buyerId) {
+//             console.error("[ERROR] Owners cannot make offers on their own land.");
+//             return null;
+//         }
+
+//         const offerId = this.generateId();
+
+//         this.offers.set(offerId, {
+//             id: offerId,
+//             landId,
+//             buyerId,
+//             amount,
+//             status: "PENDING"
+//         });
+
+//         console.log(`[OFFER] ${buyer.name} offered $${amount} for land ${landId} (Offer ID ${offerId})`);
+//         return offerId;
+//     }
+
+//     respondToOffer(ownerId: string, offerId: string, acceptOffer: boolean): boolean {
+//         const offer = this.getOffer(offerId);
+//         if (!offer) {
+//             return false;
+//         }
+
+//         if (offer.status !== "PENDING") {
+//             console.error("[ERROR] This offer has already been reviewed.");
+//             return false;
+//         }
+
+//         const land = this.getLand(offer.landId);
+//         if (!land) {
+//             return false;
+//         }
+
+//         if (land.ownerId !== ownerId) {
+//             console.error("[ERROR] Only the land owner can respond to this offer.");
+//             return false;
+//         }
+
+//         if (!acceptOffer) {
+//             offer.status = "REJECTED";
+//             console.log(`[OFFER] Offer ${offerId} was rejected`);
+//             return true;
+//         }
+
+//         offer.status = "ACCEPTED";
+//         land.approvedBuyerId = offer.buyerId;
+
+//         for (const otherOffer of this.offers.values()) {
+//             if (otherOffer.landId === land.id && otherOffer.id !== offerId && otherOffer.status === "PENDING") {
+//                 otherOffer.status = "REJECTED";
+//             }
+//         }
+
+//         console.log(`[OFFER] Offer ${offerId} was accepted. Buyer ${offer.buyerId} can now purchase land ${land.id}`);
+//         return true;
+//     }
+
+//     buyLand(buyerId: string, landId: string): boolean {
+//         const buyer = this.getUser(buyerId, "Buyer");
+//         const land = this.getLand(landId);
+
+//         if (!buyer || !land) {
+//             return false;
+//         }
+
+//         if (!land.isForSale) {
+//             console.error("[ERROR] Land is no longer for sale.");
+//             return false;
+//         }
+
+//         if (land.approvedBuyerId !== buyerId) {
+//             console.error(`[ERROR] ${buyer.name} is not approved to buy land ${landId}.`);
+//             return false;
+//         }
+
+//         const previousOwner = this.getUser(land.ownerId, "Owner");
+
+//         land.ownerId = buyerId;
+//         land.isForSale = false;
+//         land.approvedBuyerId = null;
+//         land.interestedBuyers.clear();
+
+//         console.log(`[PURCHASE] ${buyer.name} bought land ${land.id} from ${previousOwner?.name ?? "the previous owner"}`);
+//         return true;
+//     }
+// }
+
+// const marketplace = new LandMarketplace();
+
+// const aliceId = marketplace.registerUser("Alice", "123-456-7890");
+// const bobId = marketplace.registerUser("Bob", "987-654-3210");
+// const charlieId = marketplace.registerUser("Charlie", "555-555-5555");
+
+// console.log("\n--- Listing Land ---");
+// const listedLandId = marketplace.listLandForSale(aliceId, "Downtown City", 50000);
+
+// if (listedLandId) {
+//     console.log("\n--- Interest and Contact ---");
+//     marketplace.showInterest(bobId, listedLandId);
+//     marketplace.addToWishlist(charlieId, listedLandId);
+//     marketplace.requestOwnerContact(bobId, listedLandId);
+//     marketplace.requestOwnerContact(charlieId, listedLandId);
+
+//     console.log("\n--- Negotiation ---");
+//     const bobOfferId = marketplace.makeOffer(bobId, listedLandId, 45000);
+//     const charlieOfferId = marketplace.makeOffer(charlieId, listedLandId, 48000);
+
+//     if (bobOfferId && charlieOfferId) {
+//         marketplace.respondToOffer(aliceId, bobOfferId, false);
+//         marketplace.respondToOffer(aliceId, charlieOfferId, true);
+//     }
+
+//     console.log("\n--- Purchase ---");
+//     marketplace.buyLand(bobId, listedLandId);
+//     marketplace.buyLand(charlieId, listedLandId);
+// }
