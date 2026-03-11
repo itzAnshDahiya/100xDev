@@ -1,6 +1,1 @@
-import { useState } from "react";
-import "./App.css";
-
-export default function App(){
-    return <div>Hi There</div>
-}
+export { default } from "./src/App";

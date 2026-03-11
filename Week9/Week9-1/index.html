@@ -3,29 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Counter</title>
+    <title>Firebase Studio UI</title>
 </head>
 <body>
-    <div id="buttonParent">
-    </div>
-    <script>
-        let state = {
-            count: 0
-        }
-
-        function onButtonPress(){
-            state.count++;
-            buttonComponentReRender()
-        }
-        function buttonComponentReRender(){
-
-            document.getElementById("buttonParent").innerHTML = "";
-            const button = document.createElement("button");
-            button.innerHTML = `Counter ${state.count}`;
-            button.setAttribute("onclick", `onButtonPress()`);
-            document.getElementById("buttonParent").appendChild(button);
-        }
-        buttonComponentReRender();
-    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
