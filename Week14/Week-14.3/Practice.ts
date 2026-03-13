@@ -1,4 +1,5 @@
 // X (Twitter)-style backend in TypeScript (in-memory version)
+// Example Code
 
 type ID = string;
 
