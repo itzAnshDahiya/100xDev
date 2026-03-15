@@ -25,6 +25,17 @@ interface Post {
 	mentions: string[];
 	likeCount: number;
 	repostCount: number;
+	replyCount: number;
+	isDeleted: boolean;
+}
+
+interface Reply {
+	id: ID;
+	postId: ID;
+	authorId: ID;
+	content: string;
+	createdAt: Date;
+	updatedAt: Date;
 	isDeleted: boolean;
 }
 
@@ -51,6 +62,7 @@ type NotificationType =
 	| "LIKE"
 	| "MENTION"
 	| "REPOST"
+	| "REPLY"
 	| "SYSTEM";
 
 interface AppNotification {
@@ -95,9 +107,11 @@ class AppError extends Error {
 class InMemoryDatabase {
 	users = new Map<ID, User>();
 	posts = new Map<ID, Post>();
+	replies = new Map<ID, Reply>();
 	follows = new Set<string>();
 	likes = new Set<string>();
 	reposts = new Set<string>();
+	bookmarks = new Set<string>();
 	notifications = new Map<ID, AppNotification>();
 	sessions = new Map<string, Session>();
 }
@@ -353,6 +367,7 @@ class PostService {
 			mentions,
 			likeCount: 0,
 			repostCount: 0,
+			replyCount: 0,
 			isDeleted: false,
 		};
 
@@ -454,6 +469,87 @@ class PostService {
 				`${user.username} reposted your post.`,
 			);
 		}
+	}
+
+	bookmarkPost(userId: ID, postId: ID): void {
+		this.requireUser(userId);
+		const post = this.requirePost(postId);
+		this.ensurePostVisible(post);
+
+		const key = `${userId}:${postId}`;
+		if (this.db.bookmarks.has(key)) {
+			throw new AppError("ALREADY_EXISTS", "Post already bookmarked", 409);
+		}
+
+		this.db.bookmarks.add(key);
+	}
+
+	removeBookmark(userId: ID, postId: ID): void {
+		const key = `${userId}:${postId}`;
+		if (!this.db.bookmarks.delete(key)) {
+			throw new AppError("NOT_FOUND", "Bookmark not found", 404);
+		}
+	}
+
+	getBookmarkedPosts(userId: ID, page = 1, pageSize = 10): PaginatedResult<Post> {
+		this.requireUser(userId);
+		const prefix = `${userId}:`;
+		const bookmarkedPostIds = new Set(
+			[...this.db.bookmarks]
+				.filter((entry) => entry.startsWith(prefix))
+				.map((entry) => entry.split(":")[1]),
+		);
+
+		const rows = [...this.db.posts.values()]
+			.filter((p) => !p.isDeleted && bookmarkedPostIds.has(p.id))
+			.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+		return PaginationUtil.apply(rows, { page, pageSize });
+	}
+
+	createReply(userId: ID, postId: ID, content: string): Reply {
+		const author = this.requireUser(userId);
+		const post = this.requirePost(postId);
+		this.ensurePostVisible(post);
+
+		const trimmed = content.trim();
+		if (!trimmed || trimmed.length > 280) {
+			throw new AppError("INVALID_INPUT", "Reply must be between 1 and 280 chars");
+		}
+
+		const reply: Reply = {
+			id: this.idGen.next("reply"),
+			postId,
+			authorId: userId,
+			content: trimmed,
+			createdAt: new Date(),
+			updatedAt: new Date(),
+			isDeleted: false,
+		};
+
+		this.db.replies.set(reply.id, reply);
+		post.replyCount += 1;
+
+		if (post.authorId !== userId) {
+			this.notifications.notify(
+				post.authorId,
+				"REPLY",
+				`${author.username} replied to your post.`,
+			);
+		}
+
+		return reply;
+	}
+
+	getReplies(postId: ID, page = 1, pageSize = 20): PaginatedResult<Reply> {
+		const post = this.requirePost(postId);
+		this.ensurePostVisible(post);
+
+		const rows = [...this.db.replies.values()]
+			.filter((r) => r.postId === postId && !r.isDeleted)
+			.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+
+		return PaginationUtil.apply(rows, { page, pageSize });
 	}
 
 	getFeed(userId: ID, page = 1, pageSize = 10): PaginatedResult<Post> {
@@ -649,17 +745,23 @@ const p1 = app.createPostWithRateLimit(
 );
 app.postService.likePost(bob.id, p1.id);
 app.postService.repost(bob.id, p1.id);
+app.postService.bookmarkPost(bob.id, p1.id);
+app.postService.createReply(bob.id, p1.id, "Great post! I learned a lot from this.");
 
 app.userService.updateProfile(bob.id, {
 	bio: "I love scalable APIs and distributed systems",
 });
 
 const bobFeed = app.postService.getFeed(bob.id, 1, 10);
+const bobBookmarks = app.postService.getBookmarkedPosts(bob.id, 1, 10);
+const p1Replies = app.postService.getReplies(p1.id, 1, 10);
 const trending = app.postService.trendingHashtags();
 const bobNotifications = app.notifications.listForUser(bob.id, 1, 10);
 const aliceNotifications = app.notifications.listForUser(alice.id, 1, 10);
 
 console.log("Bob feed:", bobFeed.items.map((p) => p.content));
+console.log("Bob bookmarks:", bobBookmarks.items.map((p) => p.content));
+console.log("Replies on first post:", p1Replies.items.map((r) => r.content));
 console.log("Trending:", trending);
 console.log("Bob notifications:", bobNotifications.items.map((n) => n.message));
 console.log(
