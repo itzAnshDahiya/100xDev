@@ -44,7 +44,7 @@ const pgClient = new Client({
 
 // Connection ke error handle karna
 pgClient.connect().catch((error) => {
-    console.error("❌ Database se connection nahi hoo saki:", error);
+    console.error(" Database se connection nahi hoo saki:", error);
     process.exit(1);  // Agar connection fail ho to program band kar dena
 });
 
@@ -68,7 +68,7 @@ async function createTables(): Promise<void> {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP  -- Account kab banaya
             );
         `);
-        console.log("✅ Users table successfully create ho gaya!");
+        console.log(" Users table successfully create ho gaya!");
 
         // Todos table banane ke liye SQL query
         await pgClient.query(`
@@ -81,10 +81,10 @@ async function createTables(): Promise<void> {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         `);
-        console.log("✅ Todos table successfully create ho gaya!");
+        console.log("Todos table successfully create ho gaya!");
 
     } catch (error) {
-        console.error("❌ Table create karte waqt error:", error);
+        console.error(" Table create karte waqt error:", error);
     }
 }
 
@@ -104,11 +104,11 @@ async function createUser(username: string, email: string, password: string, age
         // Parameterized query use kar rahe hain (SQL injection se safe hai)
         const result = await pgClient.query(query, [username, email, password, age]);
         
-        console.log("✅ User successfully register ho gaya!");
+        console.log(" User successfully register ho gaya!");
         return result.rows[0] as User;  // Return new user data
         
     } catch (error) {
-        console.error("❌ User create karte waqt error:", error);
+        console.error(" User create karte waqt error:", error);
         return null;
     }
 }
@@ -123,11 +123,11 @@ async function createTodo(user_id: number, title: string, description: string): 
         `;
         
         const result = await pgClient.query(query, [user_id, title, description]);
-        console.log("✅ Todo successfully create ho gaya!");
+        console.log(" Todo successfully create ho gaya!");
         return result.rows[0] as Todo;
         
     } catch (error) {
-        console.error("❌ Todo create karte waqt error:", error);
+        console.error(" Todo create karte waqt error:", error);
         return null;
     }
 }
@@ -140,11 +140,11 @@ async function createTodo(user_id: number, title: string, description: string): 
 async function getAllUsers(): Promise<User[]> {
     try {
         const result = await pgClient.query("SELECT * FROM users ORDER BY created_at DESC;");
-        console.log(`📋 ${result.rows.length} users milgaye!`);
+        console.log(` ${result.rows.length} users milgaye!`);
         return result.rows as User[];
         
     } catch (error) {
-        console.error("❌ Users fetch karte waqt error:", error);
+        console.error(" Users fetch karte waqt error:", error);
         return [];
     }
 }
@@ -155,14 +155,14 @@ async function getUserById(id: number): Promise<User | null> {
         const result = await pgClient.query("SELECT * FROM users WHERE id = $1;", [id]);
         
         if (result.rows.length === 0) {
-            console.log("❌ Yeh user exist nahi karta!");
+            console.log(" Yeh user exist nahi karta!");
             return null;
         }
         
         return result.rows[0] as User;
         
     } catch (error) {
-        console.error("❌ User search karte waqt error:", error);
+        console.error(" User search karte waqt error:", error);
         return null;
     }
 }
@@ -175,11 +175,11 @@ async function getUserTodos(user_id: number): Promise<Todo[]> {
             [user_id]
         );
         
-        console.log(`📋 ${result.rows.length} todos milgaye user ke!`);
+        console.log(` ${result.rows.length} todos milgaye user ke!`);
         return result.rows as Todo[];
         
     } catch (error) {
-        console.error("❌ Todos fetch karte waqt error:", error);
+        console.error(" Todos fetch karte waqt error:", error);
         return [];
     }
 }
@@ -201,15 +201,15 @@ async function updateUser(id: number, username: string, age: number): Promise<Us
         const result = await pgClient.query(query, [username, age, id]);
         
         if (result.rows.length === 0) {
-            console.log("❌ User update nahi ho saka!");
+            console.log(" User update nahi ho saka!");
             return null;
         }
         
-        console.log("✅ User successfully update ho gaya!");
+        console.log("User successfully update ho gaya!");
         return result.rows[0] as User;
         
     } catch (error) {
-        console.error("❌ User update karte waqt error:", error);
+        console.error(" User update karte waqt error:", error);
         return null;
     }
 }
@@ -225,11 +225,11 @@ async function completeTodo(todo_id: number): Promise<Todo | null> {
         `;
         
         const result = await pgClient.query(query, [todo_id]);
-        console.log("✅ Todo complete mark ho gaya!");
+        console.log(" Todo complete mark ho gaya!");
         return result.rows[0] as Todo;
         
     } catch (error) {
-        console.error("❌ Todo update karte waqt error:", error);
+        console.error(" Todo update karte waqt error:", error);
         return null;
     }
 }
@@ -244,15 +244,15 @@ async function deleteUser(id: number): Promise<boolean> {
         const result = await pgClient.query("DELETE FROM users WHERE id = $1;", [id]);
         
         if (result.rowCount === 0) {
-            console.log("❌ User delete nahi ho saka (exist nahi karta)!");
+            console.log(" User delete nahi ho saka (exist nahi karta)!");
             return false;
         }
         
-        console.log("✅ User successfully delete ho gaya!");
+        console.log(" User successfully delete ho gaya!");
         return true;
         
     } catch (error) {
-        console.error("❌ User delete karte waqt error:", error);
+        console.error(" User delete karte waqt error:", error);
         return false;
     }
 }
@@ -263,15 +263,15 @@ async function deleteTodo(todo_id: number): Promise<boolean> {
         const result = await pgClient.query("DELETE FROM todos WHERE id = $1;", [todo_id]);
         
         if (result.rowCount === 0) {
-            console.log("❌ Todo delete nahi ho saka!");
+            console.log(" Todo delete nahi ho saka!");
             return false;
         }
         
-        console.log("✅ Todo successfully delete ho gaya!");
+        console.log(" Todo successfully delete ho gaya!");
         return true;
         
     } catch (error) {
-        console.error("❌ Todo delete karte waqt error:", error);
+        console.error("Todo delete karte waqt error:", error);
         return false;
     }
 }
@@ -297,11 +297,11 @@ async function getUserWithTodoCount(): Promise<void> {
             ORDER BY u.created_at DESC;
         `);
         
-        console.log("📊 Users with Todo Count:");
+        console.log(" Users with Todo Count:");
         console.log(result.rows);
         
     } catch (error) {
-        console.error("❌ Query execute karte waqt error:", error);
+        console.error(" Query execute karte waqt error:", error);
     }
 }
 
@@ -329,13 +329,13 @@ async function main(): Promise<void> {
         }
 
         // Sabhi users dikhana
-        console.log("\n📋 Sabhi Users:");
+        console.log("\n Sabhi Users:");
         const allUsers = await getAllUsers();
         console.log(allUsers);
 
         // Specific user ke todos
         if (user1) {
-            console.log(`\n📝 ${user1.username} ke Todos:`);
+            console.log(`\n ${user1.username} ke Todos:`);
             const todos = await getUserTodos(user1.id);
             console.log(todos);
 
@@ -351,15 +351,15 @@ async function main(): Promise<void> {
         }
 
         // Advanced query - User stats
-        console.log("\n📊 User Statistics:");
+        console.log("\n User Statistics:");
         await getUserWithTodoCount();
 
     } catch (error) {
-        console.error("❌ Main function mein error:", error);
+        console.error(" Main function mein error:", error);
     } finally {
         // Connection disconnect karna (cleanup)
         await pgClient.end();
-        console.log("👋 Database connection band ho gaya!");
+        console.log(" Database connection band ho gaya!");
     }
 }
 
