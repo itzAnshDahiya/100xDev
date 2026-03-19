@@ -72,7 +72,7 @@ app.get("/todos/:id", async (req: Request, res: Response) => {
     });
 
     if (!user) {
-        res.status(404).json({ message: "user not found" });
+        res.status(404).json({ message: "user is not found" });
         return;
     }
 
