@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyToken, extractToken } from "@/lib/jwt";
 
 export interface AuthenticatedRequest extends NextRequest {
-  userId?: string;
-  email?: string;
+  userId: string;
+  email: string;
   method: string;
   url: string;
   json: () => Promise<any>;

@@ -17,7 +17,7 @@ async function handler(req: AuthenticatedRequest) {
           createdAt: users.createdAt,
         })
         .from(users)
-        .where(eq(users.id, req.userId!))
+        .where(eq(users.id, req.userId))
         .limit(1);
 
       if (userResult.length === 0) {
@@ -41,7 +41,7 @@ async function handler(req: AuthenticatedRequest) {
           ...(avatar && { avatar }),
           updatedAt: new Date(),
         })
-        .where(eq(users.id, req.userId!));
+        .where(eq(users.id, req.userId));
 
       const updatedUserResult = await db
         .select({
@@ -52,7 +52,7 @@ async function handler(req: AuthenticatedRequest) {
           bio: users.bio,
         })
         .from(users)
-        .where(eq(users.id, req.userId!))
+        .where(eq(users.id, req.userId))
         .limit(1);
 
       return NextResponse.json({

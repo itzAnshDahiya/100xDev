@@ -16,7 +16,7 @@ async function handler(req: AuthenticatedRequest) {
       let query = db
         .select()
         .from(tasks)
-        .where(eq(tasks.userId, req.userId!));
+        .where(eq(tasks.userId, req.userId));
 
       if (status) {
         query = query.where(eq(tasks.status, status as any));
@@ -66,7 +66,7 @@ async function handler(req: AuthenticatedRequest) {
 
       await db.insert(tasks).values({
         id: taskId,
-        userId: req.userId!,
+        userId: req.userId,
         title,
         description: description || null,
         priority: priority || "MEDIUM",

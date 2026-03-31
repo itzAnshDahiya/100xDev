@@ -9,8 +9,11 @@ const DB_PATH = process.env.DATABASE_URL || "./dev.db";
 let dbInstance: SqlJsDatabase | null = null;
 let drizzleInstance: any = null;
 let sqlJs: any = null;
+let initPromise: Promise<void> | null = null;
 
 async function initializeDatabase() {
+  if (drizzleInstance) return;
+  
   try {
     sqlJs = await initSqlJs();
 
@@ -20,9 +23,10 @@ async function initializeDatabase() {
     }
 
     dbInstance = new sqlJs.Database(filebuffer);
+    if (!dbInstance) {
+      throw new Error("Failed to create database instance");
+    }
     drizzleInstance = drizzle(dbInstance, { schema });
-
-    return drizzleInstance;
   } catch (error) {
     console.error("Database initialization error:", error);
     throw error;
@@ -31,9 +35,12 @@ async function initializeDatabase() {
 
 export async function getDb() {
   if (!drizzleInstance) {
-    await initializeDatabase();
+    if (!initPromise) {
+      initPromise = initializeDatabase();
+    }
+    await initPromise;
   }
-  return drizzleInstance;
+  return drizzleInstance!;
 }
 
 export async function saveDatabase() {
@@ -52,8 +59,20 @@ export async function saveDatabase() {
   }
 }
 
-// Initialize on module load
-initializeDatabase().catch(console.error);
+// Initialize immediately
+initPromise = initializeDatabase().catch(console.error);
 
-export const db = drizzleInstance;
+// Export a wrapper that will work after initialization
+export let db: any = new Proxy({}, {
+  get(target: any, prop: string) {
+    if (!drizzleInstance) {
+      throw new Error(`Database not initialized. Cannot access property: ${prop}`);
+    }
+    return Reflect.get(drizzleInstance, prop);
+  },
+  has(target: any) {
+    return drizzleInstance != null;
+  },
+});
+
 export type DB = typeof drizzleInstance;

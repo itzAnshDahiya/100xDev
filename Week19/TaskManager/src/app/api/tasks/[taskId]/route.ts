@@ -6,49 +6,44 @@ import { eq } from "drizzle-orm";
 
 async function handler(
   req: AuthenticatedRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { taskId: string } }
 ) {
   try {
-    const taskId = params.id;
-
-    // Verify task belongs to user
-    const taskResult = await db
-      .select()
-      .from(tasks)
-      .where(eq(tasks.id, taskId))
-      .limit(1);
-
-    if (taskResult.length === 0 || taskResult[0].userId !== req.userId) {
-      return NextResponse.json(
-        { error: "Task not found" },
-        { status: 404 }
-      );
-    }
+    const { taskId } = params;
 
     if (req.method === "GET") {
+      const taskResult = await db
+        .select()
+        .from(tasks)
+        .where(eq(tasks.id, taskId))
+        .limit(1);
+
+      if (taskResult.length === 0 || taskResult[0].userId !== req.userId) {
+        return NextResponse.json(
+          { error: "Task not found" },
+          { status: 404 }
+        );
+      }
+
       return NextResponse.json(taskResult[0]);
     }
 
     if (req.method === "PUT") {
-      const { title, description, status, priority, dueDate, categoryId } = 
-        await req.json();
+      const { title, description, status, priority, dueDate } = await req.json();
+
+      const updateData: any = { updatedAt: new Date() };
+      if (title) updateData.title = title;
+      if (description) updateData.description = description;
+      if (status) updateData.status = status;
+      if (priority) updateData.priority = priority;
+      if (dueDate) updateData.dueDate = dueDate;
 
       await db
         .update(tasks)
-        .set({
-          ...(title && { title }),
-          ...(description !== undefined && { description }),
-          ...(status && { status }),
-          ...(priority && { priority }),
-          ...(dueDate !== undefined && { 
-            dueDate: dueDate ? new Date(dueDate) : null
-          }),
-          ...(categoryId !== undefined && { categoryId }),
-          updatedAt: new Date(),
-        })
+        .set(updateData)
         .where(eq(tasks.id, taskId));
 
-      const updatedResult = await db
+      const updatedTask = await db
         .select()
         .from(tasks)
         .where(eq(tasks.id, taskId))
@@ -56,7 +51,7 @@ async function handler(
 
       return NextResponse.json({
         message: "Task updated successfully",
-        task: updatedResult[0],
+        task: updatedTask[0],
       });
     }
 
@@ -83,21 +78,21 @@ async function handler(
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { taskId: string } }
 ) {
   return withAuth(req, (authReq) => handler(authReq, { params }));
 }
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { taskId: string } }
 ) {
   return withAuth(req, (authReq) => handler(authReq, { params }));
 }
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { taskId: string } }
 ) {
   return withAuth(req, (authReq) => handler(authReq, { params }));
 }
