@@ -73,25 +73,25 @@
 
 
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = "hellobacchomajaloclasska";
+const JWT_SECRET = "hellobacchomajaloclasska"; // Secret key (demo ke liye fixed)
 
+// auth middleware: headers se token nikaal ke verify karta hai
 function auth(req, res, next) {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
         return res.status(401).json({ message: "Token missing" });
     }
-    // Support "Bearer <token>"
+    // Support karte hain both "Bearer <token>" aur simple token format
     const token = authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : authHeader;
     try {
         const decodedData = jwt.verify(token, JWT_SECRET);
+        // Token valid hua — user id request pe attach kardo
         req.userId = decodedData.id;
         next();
     } catch (error) {
+        // Token invalid/expired — 403
         res.status(403).json({ message: "Incorrect Credentials!" });
     }
 }
 
-module.exports = {
-    auth,
-    JWT_SECRET
-}
+module.exports = { auth, JWT_SECRET }

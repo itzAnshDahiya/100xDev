@@ -91,150 +91,80 @@
 
 //     try {
 //         // JWT token ko verify kar rahe hain
-//         const decodedData = jwt.verify(token, JWT_SECRET);
-
-//         // Agar token valid hai, toh decoded data se userId ko request object mein set kar rahe hain
-//         req.userId = decodedData.id; // `id` ko token mein se extract kar rahe hain
-//         next(); // Next middleware ya route ko call kar rahe hain
-//     } catch (error) {
-//         // Agar token invalid ho, toh 403 error bhej rahe hain
-//         res.status(403).json({
-//             message: "Incorrect Credentials"
-//         });
-//     }
-// }
-
-// // Server ko 3000 port pe listen karwa rahe hain
-// app.listen(3000);
-
-
-
-//--------------Kirat code----------------
-
-// Import the express, mongoose, and jwt modules
+// Express aur JWT, mongoose import kar rahe hain
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 
-// Import the UserModel and TodoModel from the db.js file
+// Models import
 const { UserModel, TodoModel } = require("./db");
 
-// Create an instance of the express module
+// Express app init
 const app = express();
-
-// Parse the JSON data using the express.json() middleware
 app.use(express.json());
 
-// Connect to the MongoDB database using the mongoose.connect() method
+// MongoDB connection string (demo ke liye hardcoded)
 mongoose.connect("mongodb+srv://100xdevs:WvaTca0509mb90YX@cluster0.ossjd.mongodb.net/todo-harkirat-2222");
 
-// Create a JWT_SECRET variable for the secret key
+// JWT secret (demo)
 const JWT_SECRET = "hellobacchomajaloclasska";
 
-// Create a POST route for the signup endpoint
+// Signup route: body se email, password, name leke user create karta hai
 app.post("/signup", async function (req, res) {
-    // Get the email, password, and name from the request body
     const email = req.body.email;
     const password = req.body.password;
     const name = req.body.name;
-
     try {
-        // Create a new user using the UserModel.create() method
-        await UserModel.create({
-            email: email,
-            password: password,
-            name: name,
-        });
+        await UserModel.create({ email: email, password: password, name: name });
     } catch (error) {
-        return res.status(400).json({
-            message: "User already exists!",
-        });
+        return res.status(400).json({ message: "User already exists!" });
     }
-
-    // Send a response to the client
-    res.json({
-        message: "You are signed up!",
-    });
+    res.json({ message: "You are signed up!" });
 });
 
-// Create a POST route for the signin endpoint
+// Signin route: email/password check karke token return karta hai
 app.post("/signin", async function (req, res) {
-    // Get the email and password from the request body
     const email = req.body.email;
     const password = req.body.password;
-
-    // Find the user with the given email and password
-    const user = await UserModel.findOne({
-        email: email,
-        password: password,
-    });
-
-    // If the user is found, create a JWT token and send it to the client
+    const user = await UserModel.findOne({ email: email, password: password });
     if (user) {
-        // Create a JWT token using the jwt.sign() method
-        const token = jwt.sign(
-            {
-                id: user._id.toString(),
-            },
-            JWT_SECRET
-        );
-
-        // Send the token to the client
-        res.json({
-            token: token,
-            message: "You are signed in!",
-        });
+        const token = jwt.sign({ id: user._id.toString() }, JWT_SECRET);
+        res.json({ token: token, message: "You are signed in!" });
     } else {
-        // If the user is not found, send an error message to the client
-        res.status(403).json({
-            message: "Invalid Credentials!",
-        });
+        res.status(403).json({ message: "Invalid Credentials!" });
     }
 });
 
-// Create an auth middleware function to authenticate the user
+// Auth middleware: request headers se token verify kar deta hai
 function auth(req, res, next) {
-    // Get the token from the request headers
     const token = req.headers.authorization;
-
-    // Verify the token using the jwt.verify() method
     const decodedData = jwt.verify(token, JWT_SECRET);
-
-    // If the token is valid, set the userId in the request object and call the next middleware
     if (decodedData) {
-        // Set the userId in the request object
         req.userId = decodedData.id;
-
-        // Call the next middleware
         next();
     } else {
-        // If the token is invalid, send an error message to the client
-        res.status(403).json({
-            message: "Invalid Token!",
-        });
+        res.status(403).json({ message: "Invalid Token!" });
     }
 }
 
-// Create a POST route for the todo endpoint
+// Create todo: authenticated user ke liye todo create karta hai
 app.post("/todo", auth, async function (req, res) {
-    // Get the userId from the request object
     const userId = req.userId;
-
-    // Get the title, and done from the request body
     const title = req.body.title;
     const done = req.body.done;
+    await TodoModel.create({ userId, title, done });
+    res.json({ message: "Todo created" });
+});
 
-    // Create a new todo using the TodoModel.create() method
-    await TodoModel.create({
-        userId,
-        title,
-        done,
-    });
+// Get todos: authenticated user ke saare todos return karta hai
+app.get("/todo", auth, async function (req, res) {
+    const userId = req.userId;
+    const todos = await TodoModel.find({ userId });
+    res.json({ todos });
+});
 
-    // Send a response to the client
-    res.json({
-        message: "Todo created",
-    });
+// Server start
+app.listen(3000);
 });
 
 // Create a GET route for the todo endpoint

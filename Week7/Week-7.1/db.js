@@ -30,41 +30,30 @@
 
 //--------------Kirat code----------------
 
-// Import mongoose to interact with MongoDB
+// Mongoose import kar rahe hain taaki MongoDB se interact kar sakein
 const mongoose = require("mongoose");
 
-/*
-const User = new mongoose.Schema({
-    email: String,
-    password: String,
-    name: String,
-});
-*/
-
-// Use Schema and ObjectId from mongoose for creating models
+// Schema aur ObjectId helper le rahe hain
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.ObjectId;
 
-// Define the User schema with fields for email, password, and name
+// User schema define kar rahe — email unique rakha gaya hai
 const User = new Schema({
-    email: { type: String, unique: true }, // Make email unique to avoid duplicate entries
+    email: { type: String, unique: true },
     password: String,
     name: String,
 });
 
-// Define the Todo schema with fields for title, done, and userId
+// Todo schema — title, done flag aur jis user ne banaya uska reference
 const Todo = new Schema({
     title: String,
     done: Boolean,
     userId: ObjectId,
 });
 
-// Create Mongoose models for users and todos collections using the User and Todo schemas
+// Models create kar rahe hain (collections ke saath interact karne ke liye)
 const UserModel = mongoose.model("users", User);
 const TodoModel = mongoose.model("todos", Todo);
 
-// Export the User and Todo models for use in other files
-module.exports = {
-    UserModel,
-    TodoModel,
-};
+// Export kar dete hain taaki baki files use kar sakein
+module.exports = { UserModel, TodoModel };

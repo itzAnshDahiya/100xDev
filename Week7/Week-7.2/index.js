@@ -304,6 +304,7 @@
 
 
 
+// Express, mongoose, jwt, bcrypt aur zod import
 const express = require("express");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
@@ -312,11 +313,14 @@ const { z } = require("zod");
 const { UserModel, TodoModel } = require("./db");
 const { auth, JWT_SECRET } = require("./auth");
 
+// App initialize
 const app = express();
 app.use(express.json());
 
+// MongoDB connect (connection string hardcoded for demo)
 mongoose.connect("mongodb+srv://Sinbad:1gKBgpkvVpggYpjA@sinbad.ypmtdr1.mongodb.net/Sinbad");
-// Signup route
+
+// Signup route - validation + hashing + user create
 app.post("/signup", async (req, res) => {
     const requireBody = z.object({
         email: z.string().min(3).max(100).email(),
@@ -326,38 +330,29 @@ app.post("/signup", async (req, res) => {
 
     const parsed = requireBody.safeParse(req.body);
     if (!parsed.success) {
-        return res.status(400).json({
-            message: "Incorrect data format",
-            error: parsed.error,
-        });
+        return res.status(400).json({ message: "Incorrect data format", error: parsed.error });
     }
 
     const { email, password, name } = parsed.data;
 
     try {
-        const hashedPassword = await bcrypt.hash(password, 5);
-        await UserModel.create({
-            email,
-            password: hashedPassword,
-            name,
-        });
+        const hashedPassword = await bcrypt.hash(password, 5); // password hash kar rahe
+        await UserModel.create({ email, password: hashedPassword, name });
         res.json({ message: "You are signed up!" });
     } catch (error) {
-        if (error.code === 11000) { // Duplicate key error
+        if (error.code === 11000) { // duplicate email
             return res.status(409).json({ message: "User already exists!" });
         }
         res.status(500).json({ message: "Internal server error" });
     }
 });
 
-// Signin route
+// Signin route - check credentials aur token return
 app.post("/signin", async (req, res) => {
     const { email, password } = req.body;
     try {
         const user = await UserModel.findOne({ email });
-        if (!user) {
-            return res.status(403).json({ message: "Invalid Credentials!" });
-        }
+        if (!user) return res.status(403).json({ message: "Invalid Credentials!" });
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (passwordMatch) {
             const token = jwt.sign({ id: user._id.toString() }, JWT_SECRET);
@@ -370,7 +365,7 @@ app.post("/signin", async (req, res) => {
     }
 });
 
-// Create a todo
+// Create a todo (protected route)
 app.post("/todos", auth, async (req, res) => {
     const userId = req.userId;
     const { title, done } = req.body;
@@ -382,7 +377,7 @@ app.post("/todos", auth, async (req, res) => {
     }
 });
 
-// Get all todos for user
+// Get all todos for authenticated user
 app.get("/todos", auth, async (req, res) => {
     const userId = req.userId;
     try {

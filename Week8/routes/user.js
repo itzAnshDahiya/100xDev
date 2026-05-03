@@ -3,11 +3,13 @@ const { userModel, purchaseModel, courseModel } = require("../db");
 const jwt = require("jsonwebtoken");
 const {JWT_USER_PASSWORD} = require("../config");
 const { z } = require("zod");
+const { userMiddleware } = require("../middleware/user");
+
 console.log(JWT_USER_PASSWORD);
 
 const userRouter = Router();
 
-// Zod schemas
+// Zod schemas for input validation (signup/signin)
 const signupSchema = z.object({
     email: z.string().email().min(5).max(100),
     password: z.string().min(5).max(32).regex(/[!@#$%^&*(),.?":{}|<>]/),
@@ -20,79 +22,44 @@ const signinSchema = z.object({
     password: z.string().min(5).max(32)
 });
 
+// Signup route - validate aur user create
 userRouter.post('/signup', async function(req, res) {
     const parseResult = signupSchema.safeParse(req.body);
     if (!parseResult.success) {
         return res.status(400).json({ message: "Invalid input", errors: parseResult.error.errors });
     }
-    const {  email, password , firstName, lastName } = parseResult.data;
-    // Check if user already exists
+    const { email, password, firstName, lastName } = parseResult.data;
     const existingUser = await userModel.findOne({ email });
-    if (existingUser) {
-        return res.status(409).json({ message: "User already exists" });
-    }
-    await userModel.create({
-        email: email,
-        password: password,
-        firstName: firstName,
-        lastName: lastName
-    })
-    res.json({
-        message: "signup endpoint"
-    });
+    if (existingUser) return res.status(409).json({ message: "User already exists" });
+    await userModel.create({ email, password, firstName, lastName })
+    res.json({ message: "signup endpoint" });
 });
 
+// Signin route - validate aur token return
 userRouter.post("/signin", async function(req, res) {
     const parseResult = signinSchema.safeParse(req.body);
-    if (!parseResult.success) {
-        return res.status(400).json({ message: "Invalid input", errors: parseResult.error.errors });
+    if (!parseResult.success) return res.status(400).json({ message: "Invalid input", errors: parseResult.error.errors });
+    const { email, password } = parseResult.data;
+    const user = await userModel.findOne({ email: email, password: password });
+    if (user) {
+        const token = jwt.sign({ id: user._id }, JWT_USER_PASSWORD)
+        // Cookie logic future mein add kar sakte ho
+        res.json({ token: token })
+    } else {
+        res.status(403).json({ message: "Incorrect Credentials" });
     }
-    const { email , password } = parseResult.data;
-    
-    const user = await userModel.findOne({
-        email: email,
-        password: password
-    });
-if(user){
-    const token = jwt.sign({
-        id: user._id
-    }, JWT_USER_PASSWORD)
-
-     // Do Cookie Logic in Future
-res.json({
-    token: token 
-})
-}else{
-    res.status(403).json({
-        message: "Incorrect Credentials"
-    });
-}
 });
 
+// Purchases route - authenticated user ki purchases aur courses data return karta hai
 userRouter.post('/purchases', userMiddleware , async function (req, res) {
     const userId = req.userId;
-
-    const purchases = await purchaseModel.find({
-        userId,
-
-    })
-    let purchasedCourseIds= [];
-    for(let i = 0 ; i < purchases.length; i++){
-        purchasedCourseIds.push(purchases[i].courseId)
-    }
-
-    const coursesData = await courseModel.find({
-        _id: {$in: purchasedCourseIds}
-    })
-    res.json({
-        purchases,
-        coursesData
-    });
+    const purchases = await purchaseModel.find({ userId })
+    let purchasedCourseIds = purchases.map(p => p.courseId);
+    const coursesData = await courseModel.find({ _id: { $in: purchasedCourseIds } })
+    res.json({ purchases, coursesData });
 });
 
-module.exports = {
-    userRouter: userRouter
-}
+module.exports = { userRouter: userRouter }
 
 
 
