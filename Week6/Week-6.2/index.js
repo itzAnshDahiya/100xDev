@@ -1,38 +1,45 @@
+// Express aur JWT import kar rahe hain (server aur token ke liye)
 const express = require("express");
 const jwt = require("jsonwebtoken");
 
+// Secret token (development ke liye fixed string) — production mein env var mein rakho
 const JWT_SECRET = "kirat123123";
 
+// Express app initialize
 const app = express();
-app.use(express.json());
+app.use(express.json()); // JSON body parse karne ke liye
 
+// Simple in-memory users store (demo ke liye)
 const users = [];
 
+// Logger middleware - har request ka method console pe dikhata hai
 function logger(req, res, next) {
     console.log(req.method + " request came");
     next();
 }
 
-// localhost:2000
+// Root route - agar public HTML serve karna ho
 app.get("/", function(req, res) {
-    res.sendFile(__dirname + "/public/index.html");     // __dirname means the current directory
+    // __dirname current folder ka path deta hai
+    res.sendFile(__dirname + "/public/index.html");
 })
 
+// Signup endpoint - username/password lekar user list mein add karta hai
 app.post("/signup", logger, function(req, res) {
     const username = req.body.username
     const password = req.body.password
+    // Simple push (validation skip kiya gaya) — demo ke liye
     users.push({
         username: username,
         password: password
     })
-
-    // we should check if a user with this username already exists
 
     res.json({
         message: "You are signed in"
     })
 })
 
+// Signin endpoint - credentials check karke JWT return karta hai
 app.post("/signin", logger, function(req, res) {
     const username = req.body.username;
     const password = req.body.password;
@@ -46,16 +53,20 @@ app.post("/signin", logger, function(req, res) {
     }
 
     if (!foundUser) {
+        // Credentials galat hain
         res.json({
-            message: "Credentials are incorrect"    //This will be displayed when the data filled is not right
+            message: "Credentials are incorrect"
         })
         return 
     } else {
+        // Token sign kar rahe hain - inside token username store kar rahe hain
         const token = jwt.sign({
             username: foundUser.username
         }, JWT_SECRET);
+        // Custom header mein token bhej rahe hain (demo)
         res.header("jwt", token);
 
+        // Extra custom header (demo)
         res.header("random", "harkirat");
 
         res.json({
@@ -64,40 +75,42 @@ app.post("/signin", logger, function(req, res) {
     }
 })
 
+// Auth middleware - headers se token nikaal ke verify karta
 function auth(req, res, next) {
     const token = req.headers.token;
-    const decodedData = jwt.verify(token, JWT_SECRET);
-
-    if (decodedData.username) {
-        // req = {status, headers...., username, password, userFirstName, random; ":123123"}
-        req.username = decodedData.username
-        next()
-    } else {
-        res.json({
-            message: "You are not logged in"
-        })
+    try {
+        const decodedData = jwt.verify(token, JWT_SECRET);
+        if (decodedData.username) {
+            req.username = decodedData.username
+            next()
+        } else {
+            res.json({ message: "You are not logged in" })
+        }
+    } catch (err) {
+        res.json({ message: "You are not logged in" })
     }
 }
 
+// Protected route - current user info
 app.get("/me", logger, auth, function(req, res) {
-    // req = {status, headers...., username, password, userFirstName, random; ":123123"}
     const currentUser = req.username;
-    // const token = req.headers.token;
-    // const decodedData = jwt.verify(token, JWT_SECRET);
-    // const currentUser = decodedData.username
-
+    let foundUser = null;
     for (let i = 0; i < users.length; i++) {
         if (users[i].username === currentUser) {
             foundUser = users[i]
         }
     }
-
+    if (!foundUser) {
+        return res.status(404).json({ message: "User not found" })
+    }
+    // NOTE: Password return karna unsafe hai - demo ke liye hi rakhte hain
     res.json({
         username: foundUser.username,
         password: foundUser.password
     })
 })
 
+// Server start
 app.listen(3000);
 
 
