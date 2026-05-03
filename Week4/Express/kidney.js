@@ -16,35 +16,53 @@
 
 
 
-//Kidneys
+// Kidneys tracking system
 
+// Express module ko import kar rahe ho
 const express = require("express");
+// Express app banate ho
 const app = express();
+// JSON middleware
 app.use(express.json());
 
+// Users array - john ke kidneys ki info
 const users = [
   {
+    // User ka name
     name: "john",
+    // Kidneys array - har kidney ka health status
     kidneys: [
+      // Pehli kidney (unhealthy)
       { healthy: false }
     ],
   }
 ];
 
-// GET all kidneys info
+// GET endpoint - kidney info dekho
 app.get("/", function (req, res) {
+  // John ke kidneys nikaal rahe ho
   const johnKidneys = users[0].kidneys;
+  // Total kidneys ka count
   const numberOfKidneys = johnKidneys.length;
+  // Healthy kidneys ka count - initially 0
   let numberOfHealthyKidneys = 0;
+  // Loop - har kidney pe check kar rahe ho
   for (let i = 0; i < johnKidneys.length; i++) {
+    // Agar kidney healthy hai
     if (johnKidneys[i].healthy) {
+      // Healthy count ko increment kar rahe ho
       numberOfHealthyKidneys += 1;
     }
   }
+  // Unhealthy kidneys = total - healthy
   const numberOfUnhealthyKidneys = numberOfKidneys - numberOfHealthyKidneys;
+  // Response mein sabhi info bhej rahe ho
   res.json({
+    // Sab kidneys
     johnKidneys,
+    // Healthy kidneys count
     numberOfHealthyKidneys,
+    // Unhealthy kidneys count
     numberOfUnhealthyKidneys,
   });
 });
