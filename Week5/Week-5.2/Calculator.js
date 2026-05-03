@@ -1,53 +1,62 @@
+// Express module ko import kar rahe ho
 const express = require("express");
 
+// Express app banate ho
 const app = express();
 
+// GET endpoint - /sum - do numbers add karne ke liye
 app.get("/sum", function(req, res) {
+    // Query se 'a' parameter lena
     const a = req.query.a;
+    // Query se 'b' parameter lena
     const b = req.query.b;
 
+    // JSON response mein sum bhej rahe ho
     res.json({
         ans: a + b
     })
 });
 
+// GET endpoint - /divide - do numbers divide karne ke liye
 app.get("/divide", function(req, res) {
+    // Query se 'a' parameter lena
     const a = req.query.a;
+    // Query se 'b' parameter lena
     const b = req.query.b;
+    // JSON response mein division result bhej rahe ho
     res.json({
         ans: a / b
     })
 });
-    app.get("/multiply", function(req, res) {
-        const a = req.query.a;
-        const b = req.query.b;
-        res.json({
-            ans: a * b
-        })
+
+// GET endpoint - /multiply - do numbers multiply karne ke liye
+app.get("/multiply", function(req, res) {
+    // Query se 'a' parameter lena
+    const a = req.query.a;
+    // Query se 'b' parameter lena
+    const b = req.query.b;
+    // JSON response mein multiplication result bhej rahe ho
+    res.json({
+        ans: a * b
+    })
 });
 
+// GET endpoint - /subtract - do numbers subtract karne ke liye
 app.get("/subtract", function(req, res) {
+    // Query se 'a' parameter lena
     const a = req.query.a;
+    // Query se 'b' parameter lena
     const b = req.query.b;
+    // JSON response mein subtraction result bhej rahe ho
     res.json({
         ans: a - b
     })
 });
 
+// Port 3000 pe server listen kar rahe ho
 app.listen(3000);
 
-
-
-//-----------------------More structured code----------------------//
-// const express = require("express");
-// const app = express();
-// app.use(express.json());
-
-// Helper function to parse and validate numbers
-// function parseNumbers(req, res) {
-//     const a = Number(req.query.a);
-//     const b = Number(req.query.b);
-//     if (isNaN(a) || isNaN(b)) {
+// More structured code (commented out - advanced version)
 //         res.status(400).json({ error: "Both 'a' and 'b' must be valid numbers." });
 //         return null;
 //     }
