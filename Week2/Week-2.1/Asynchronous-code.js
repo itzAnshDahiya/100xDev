@@ -22,7 +22,6 @@ setTimeout(timeout , 14000);
 console.log("You are welcomed here");
 
 
-
 //Clock With a expensive time consuming function
 
 function timeout1(){
