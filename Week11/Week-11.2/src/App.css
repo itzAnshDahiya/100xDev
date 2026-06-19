@@ -1,0 +1,39 @@
+/* App.css */
+
+/* Overall container */
+.app {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    padding: 20px;
+}
+
+/* Header styles */
+.header {
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+/* Button styles */
+.button {
+    background-color: #6200ea;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #3700b3;
+}
+
+/* Container for some content */
+.content {
+    margin-top: 20px;
+    font-size: 1.1rem;
+    color: #555;
+}

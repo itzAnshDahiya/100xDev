@@ -1,0 +1,18 @@
+ESSENTIAL COMMANDS
+==================
+
+1. node --version
+2. npm --version
+3. cd "c:/Users/anshd/OneDrive/Desktop/My Code/Harkirat 100XDev/100xDev/Week17/Week-17.1"
+4. npm install
+5. npm run build
+6. npm run dev
+
+OR INDIVIDUAL PACKAGE INSTALLATION:
+===================================
+
+npm install pg
+npm install express
+npm install typescript
+npm install --save-dev @types/pg
+npm install --save-dev @types/express

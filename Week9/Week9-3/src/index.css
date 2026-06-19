@@ -1,0 +1,88 @@
+/* Center the entire content */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #dfe6e9;
+}
+
+/* Container for all posts */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+}
+
+/* Post styling */
+.post {
+  background-color: #fff;
+  padding: 20px;
+  margin-bottom: 20px; /* Space between posts */
+  border-radius: 8px;
+  width: 100%; /* Make each post a block element that takes full width */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for better visual separation */
+  transition: transform 0.3s ease; /* Smooth scale transition on hover */
+}
+
+.post:hover {
+  transform: scale(1.02); /* Slight zoom effect when hovered */
+}
+
+/* Post header styling */
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.post-header img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.post-header .name {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.post-header .subtitle {
+  font-size: 14px;
+  color: #888;
+}
+
+.post-header .time {
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 5px;
+}
+
+/* Post description styling */
+.post-description {
+  font-size: 16px;
+  color: #333;
+  line-height: 1.5;
+}
+
+button {
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 20px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #2980b9;
+}

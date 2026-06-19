@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "@types/express": "^5.0.6",
+    "@types/pg": "^8.18.0",
+    "express": "^5.2.1",
+    "pg": "^8.20.0",
+    "typescript": "^5.9.3"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "dev": "npm run build && node ./dist/index.js"
+  }
+}
